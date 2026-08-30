@@ -6,12 +6,13 @@ Vite + React 19 + TypeScript SPA for the Gold Loan Portal. This document is the 
 
 - Vite, React 19, TypeScript (`~6.0.2`).
 - Vitest (`jsdom` environment, `globals: true`) for tests — see `vite.config.ts`. Test files are colocated as `*.test.ts`/`*.test.tsx` next to the code they cover.
+- **Styling & UI primitives: Tailwind CSS v4 + shadcn/ui** (`radix-nova` style, Radix UI base, Lucide icons, Geist Variable font). `components.json` holds the shadcn config; the `@/*` alias (`tsconfig.app.json` + `tsconfig.json` + `vite.config.ts`) points at `src/*`. Add a new primitive via `pnpm dlx shadcn@latest add <component>` — it lands in `src/components/ui/`, is owned/edited like any other repo file, and its variant/hook exports are exempted from `react-refresh/only-export-components` in `eslint.config.mjs` (shadcn's own convention, not a bug). Theme tokens (CSS variables) live in `src/index.css`; `--primary` is a gold/amber tone for the loan-portal brand, everything else is shadcn's neutral default.
 - Package manager: **pnpm** (pinned via `packageManager` in `package.json`). Don't use `npm`/`yarn` in this repo.
 - Lint/format/hooks: ESLint (flat config, React hooks + refresh plugins), Prettier, Husky, lint-staged. See `.husky/*` and `CHANGELOG.md` for what's enforced.
 - **Server state: TanStack Query.** `QueryClientProvider` wraps the app in `main.tsx`, backed by the single `queryClient` instance in `src/lib/queryClient.ts`. Anything that comes from the API — loan records, customer lookups, gold rate data — is a query or mutation, never fetched in a `useEffect` and stored in local/component state. Query keys live in one `queryKeys.ts` per feature (once a feature exists). One mutations file per feature centralizes invalidations — a mutation that changes data must invalidate every query it affects.
 - **URL query-param state: nuqs.** `NuqsAdapter` wraps the app in `main.tsx`, inside the query client provider.
 - **Client state: Zustand.** Reserved for state that isn't server data and isn't local to one component — e.g. the active branch/session, a multi-step form's in-progress values. If it comes from the API, it's a query, not a store. If it's only used by one component and its children, it's `useState`, not a store. No store exists yet — add the first one in the ticket that actually needs global client state.
-- **Forms: React Hook Form + Zod**, via `@hookform/resolvers`. Schema colocated with the feature (`<feature>/<feature>.schema.ts`), shared with the corresponding API call's expected shape where the two overlap. Mapping form values to an API payload is a small function in the feature's own service/mapper file — not inline in the component or the submit handler. No form exists yet — add the first schema in the ticket that needs it.
+- **Forms: React Hook Form + Zod**, via `@hookform/resolvers`, composed with shadcn's `Form`/`FormField`/`FormItem`/`FormControl`/`FormMessage` (`src/components/ui/form.tsx`). Schema colocated with the feature (`<feature>/<feature>.schema.ts`), shared with the corresponding API call's expected shape where the two overlap. A field validated with `z.coerce.number()` needs `useForm`'s separate input/output generics (`z.input<typeof schema>` for form state, `z.output<typeof schema>` for the submit handler) — RHF and the schema's post-coercion type otherwise conflict. Mapping form values to an API payload is a small function in the feature's own service/mapper file — not inline in the component or the submit handler. First real example: `src/features/lead-intake/` (GLA-19).
 
 ### Coming soon (not installed yet)
 
@@ -21,12 +22,12 @@ Committed choices, not yet wired up. Add each in the ticket that actually needs 
 
 ## Folder Structure
 
-Right now everything lives flat in `src/` (`App.tsx`, `main.tsx`, one sample test) — there's no real feature yet. Once one lands, components are organized by feature, not by file type:
+Components are organized by feature, not by file type:
 
 ```
 src/
   components/
-    ui/                        # small shared primitives (Button, Input, Modal) with no feature logic
+    ui/                        # shadcn/ui primitives (Button, Input, Select, Form, Card, ...) with no feature logic
   features/
     <feature>/
       components/               # components used only by this feature
@@ -94,4 +95,3 @@ Only log prompts that produced a change which actually merged. A ticket revisite
 - No routing library yet — a single `App.tsx` with no navigation. Add one (e.g. React Router) when a second screen exists.
 - No API client wired up yet — `VITE_API_BASE_URL` is defined in `.env.example` for when one lands.
 - No authentication yet.
-- No design system/shared UI primitives yet — `components/ui/` is a placeholder until the first one is needed.
