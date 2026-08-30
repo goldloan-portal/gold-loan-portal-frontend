@@ -41,4 +41,6 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 
 ### Fixed
 
+- [GLA-24] `LoanCalculatorPage`'s store-sync effect crashed with "Maximum update depth exceeded" — it depended on a `safeParse` result computed fresh (and non-memoized) on every render instead of on the stable `debouncedValues` it was derived from, so every render re-fired the effect and re-triggered a store update. Fixed by keying the effect off `debouncedValues` and re-parsing inside it.
+
 ### Removed

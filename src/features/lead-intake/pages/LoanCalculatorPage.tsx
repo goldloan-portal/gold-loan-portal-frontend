@@ -57,12 +57,13 @@ export function LoanCalculatorPage() {
   });
 
   useEffect(() => {
-    if (!parsedInput.success) return;
+    const parsed = goldCalculatorSchema.safeParse(debouncedValues);
+    if (!parsed.success) return;
     const currentDetails = useLeadIntakeStore.getState().customerDetails;
     if (currentDetails) {
-      setCustomerDetails({ ...currentDetails, ...parsedInput.data });
+      setCustomerDetails({ ...currentDetails, ...parsed.data });
     }
-  }, [parsedInput.success, parsedInput.data, setCustomerDetails]);
+  }, [debouncedValues, setCustomerDetails]);
 
   useEffect(() => {
     if (calculationQuery.data) {
