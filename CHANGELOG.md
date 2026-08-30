@@ -32,6 +32,7 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-21] Step 2 — Loan Calculator & Scheme Selection (covers GLA-22 + GLA-23), routed at `/loan-calculator`: live pure-gold-weight/max-eligible-loan estimate from `POST /api/v1/leads/calculate` as gross/net/purity change (400ms debounced, backend is the single source of truth — nothing computed client-side), and selectable loan-plan cards fetched from `GET /api/v1/loan-schemes` via TanStack Query. Selection stored in a new `leadIntakeStore` (Zustand) alongside step 1's submitted details, shared across both pages for step 3. Redirects to `/` if step 2 is opened without step 1's data.
 - [GLA-21] `src/lib/apiClient.ts` — first API client, thin `fetch` wrapper matching the backend's `{ data }` / `{ error }` envelope, throwing a typed `ApiError`. `.env` created locally from `.env.example` (`VITE_API_BASE_URL`).
 - [GLA-21] `src/hooks/useDebouncedValue.ts` — generic debounce hook, first addition to `src/hooks/`.
+- [GLA-27] Admin/Partner Dashboard (covers GLA-28), routed at `/admin`: leads table fetched from `GET /api/v1/leads` via TanStack Query, columns Customer Name, Masked Mobile, Net Weight, Selected Plan, Calculated Loan Value, with loading/empty/error states. `src/components/ui/table.tsx` (shadcn) added as the first table primitive. Mobile masking is already applied server-side, so the raw number is never present in the response the UI renders.
 
 ### Changed
 
