@@ -15,6 +15,16 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 
 ### Added
 
+### Changed
+
+### Fixed
+
+### Removed
+
+## [0.2.0] - 2026-08-30
+
+### Added
+
 - [GLA-2] Husky pre-commit/commit-msg/pre-push hooks, lint-staged, ESLint, and Prettier set up to enforce code quality and conventional, ticket-tagged commit messages.
 - [GLA-3] `CLAUDE.md` documenting stack, folder structure, component conventions, git/PR conventions, and AI prompt-logging conventions.
 - [GLA-3] `.claude/skills/commit-gla` and `.claude/skills/pr-gla` — husky-compliant conventional commit and PR-creation automation. `.claude/commands/validate.md` (lint/typecheck/build/prettier/test pipeline) and `.claude/commands/release.md` (dev → main release across both repos).
@@ -50,5 +60,3 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 
 - [GLA-24] `LoanCalculatorPage`'s store-sync effect crashed with "Maximum update depth exceeded" — it depended on a `safeParse` result computed fresh (and non-memoized) on every render instead of on the stable `debouncedValues` it was derived from, so every render re-fired the effect and re-triggered a store update. Fixed by keying the effect off `debouncedValues` and re-parsing inside it.
 - [GLA-27] Step 1 (`CustomerGoldDetailsForm`) always rendered empty on mount, even when the user had already filled it in and only navigated forward and back within the flow (1 → 2 → 1) — it now prefills from `leadIntakeStore.customerDetails` when present.
-
-### Removed
