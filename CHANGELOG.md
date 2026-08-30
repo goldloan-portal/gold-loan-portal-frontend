@@ -35,6 +35,7 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-24] Step 3 — Submit & Confirmation (covers GLA-25 + GLA-26), routed at `/review`: a TanStack Query mutation wired to `POST /api/v1/leads/submit`, showing a review summary before submit and a confirmation view (Application ID, masked mobile, plan, loan amount, "Start a New Application") immediately after success. `400` (field-level `ValidationError`) and `409` (`DuplicateLeadError`) responses are surfaced inline without crashing the app.
 - [GLA-24] `Loan Calculator` page gains a "Continue" action (enabled once a plan is selected and a live estimate exists) that carries the last calculation and any in-page weight edits into the shared `leadIntakeStore` for step 3.
 - [GLA-27] Admin/Partner Dashboard (covers GLA-28), routed at `/admin`: leads table fetched from `GET /api/v1/leads` via TanStack Query, columns Customer Name, Masked Mobile, Net Weight, Selected Plan, Calculated Loan Value, with loading/empty/error states. `src/components/ui/table.tsx` (shadcn) added as the first table primitive. Mobile masking is already applied server-side, so the raw number is never present in the response the UI renders.
+- [GLA-27] `AI_LOG.md`'s required sections explicitly tagged as satisfying `GLA-30`, plus a `GLA-27` ticket-log entry; `README.md` gains a "Running the Full Stack Locally" section cross-referencing the sibling `gold-loan-portal-api` repo.
 
 ### Changed
 
