@@ -1,32 +1,40 @@
-# React + TypeScript + Vite
+# gold-loan-portal-frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+![CI](https://github.com/goldloan-portal/gold-loan-portal-frontend/actions/workflows/ci.yaml/badge.svg)
 
-Currently, two official plugins are available:
+Vite + React 19 + TypeScript frontend for the Gold Loan Portal. See [PRODUCT.md](PRODUCT.md) for what this application does and [CLAUDE.md](CLAUDE.md) for its technical conventions.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Prerequisites
 
-## React Compiler
+- Node.js 24+
+- [pnpm](https://pnpm.io/) 10+ (`corepack enable` will pick up the version pinned in `package.json`)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Setup
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+pnpm install
+pnpm dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+The dev server starts on Vite's default port (`5173`).
+
+## Scripts
+
+| Command                | What it does                                  |
+| ---------------------- | --------------------------------------------- |
+| `pnpm dev`             | Start the Vite dev server                     |
+| `pnpm build`           | Typecheck (`tsc -b`) and build for production |
+| `pnpm preview`         | Preview the production build locally          |
+| `pnpm test`            | Run the Vitest suite once                     |
+| `pnpm test:watch`      | Run Vitest in watch mode                      |
+| `pnpm typecheck`       | Typecheck only, no build                      |
+| `pnpm lint`            | ESLint, with `--fix`                          |
+| `pnpm prettier:check`  | Check formatting without writing              |
+| `pnpm prettier:format` | Write formatting fixes                        |
+
+## Documentation
+
+- [PRODUCT.md](PRODUCT.md) — the assignment brief this project fulfills: domain formulas, required API surface, evaluation criteria.
+- [CLAUDE.md](CLAUDE.md) — stack, folder structure, and conventions for AI-assisted coding on this repo.
+- [AI_LOG.md](AI_LOG.md) — log of AI-assisted work on this repo (mandatory assignment deliverable).
+- [CHANGELOG.md](CHANGELOG.md) — notable changes, Keep a Changelog format.
