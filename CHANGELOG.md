@@ -32,6 +32,8 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-21] Step 2 — Loan Calculator & Scheme Selection (covers GLA-22 + GLA-23), routed at `/loan-calculator`: live pure-gold-weight/max-eligible-loan estimate from `POST /api/v1/leads/calculate` as gross/net/purity change (400ms debounced, backend is the single source of truth — nothing computed client-side), and selectable loan-plan cards fetched from `GET /api/v1/loan-schemes` via TanStack Query. Selection stored in a new `leadIntakeStore` (Zustand) alongside step 1's submitted details, shared across both pages for step 3. Redirects to `/` if step 2 is opened without step 1's data.
 - [GLA-21] `src/lib/apiClient.ts` — first API client, thin `fetch` wrapper matching the backend's `{ data }` / `{ error }` envelope, throwing a typed `ApiError`. `.env` created locally from `.env.example` (`VITE_API_BASE_URL`).
 - [GLA-21] `src/hooks/useDebouncedValue.ts` — generic debounce hook, first addition to `src/hooks/`.
+- [GLA-24] Step 3 — Submit & Confirmation (covers GLA-25 + GLA-26), routed at `/review`: a TanStack Query mutation wired to `POST /api/v1/leads/submit`, showing a review summary before submit and a confirmation view (Application ID, masked mobile, plan, loan amount, "Start a New Application") immediately after success. `400` (field-level `ValidationError`) and `409` (`DuplicateLeadError`) responses are surfaced inline without crashing the app.
+- [GLA-24] `Loan Calculator` page gains a "Continue" action (enabled once a plan is selected and a live estimate exists) that carries the last calculation and any in-page weight edits into the shared `leadIntakeStore` for step 3.
 - [GLA-27] Admin/Partner Dashboard (covers GLA-28), routed at `/admin`: leads table fetched from `GET /api/v1/leads` via TanStack Query, columns Customer Name, Masked Mobile, Net Weight, Selected Plan, Calculated Loan Value, with loading/empty/error states. `src/components/ui/table.tsx` (shadcn) added as the first table primitive. Mobile masking is already applied server-side, so the raw number is never present in the response the UI renders.
 
 ### Changed
@@ -39,5 +41,7 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-21] `customerGoldDetailsSchema`'s gross/net/purity fields extracted into a shared `goldWeightFields` object (mirroring the backend's `lead.schema.ts`) so the new `goldCalculatorSchema` can reuse them without drift; the gross/net/purity `FormField` markup itself extracted into `GoldWeightFields`, shared between `CustomerGoldDetailsForm` and the new loan calculator.
 
 ### Fixed
+
+- [GLA-24] `LoanCalculatorPage`'s store-sync effect crashed with "Maximum update depth exceeded" — it depended on a `safeParse` result computed fresh (and non-memoized) on every render instead of on the stable `debouncedValues` it was derived from, so every render re-fired the effect and re-triggered a store update. Fixed by keying the effect off `debouncedValues` and re-parsing inside it.
 
 ### Removed
