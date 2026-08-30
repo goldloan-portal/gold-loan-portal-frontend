@@ -34,13 +34,21 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-21] `src/hooks/useDebouncedValue.ts` — generic debounce hook, first addition to `src/hooks/`.
 - [GLA-24] Step 3 — Submit & Confirmation (covers GLA-25 + GLA-26), routed at `/review`: a TanStack Query mutation wired to `POST /api/v1/leads/submit`, showing a review summary before submit and a confirmation view (Application ID, masked mobile, plan, loan amount, "Start a New Application") immediately after success. `400` (field-level `ValidationError`) and `409` (`DuplicateLeadError`) responses are surfaced inline without crashing the app.
 - [GLA-24] `Loan Calculator` page gains a "Continue" action (enabled once a plan is selected and a live estimate exists) that carries the last calculation and any in-page weight edits into the shared `leadIntakeStore` for step 3.
+- [GLA-27] Admin/Partner Dashboard (covers GLA-28), routed at `/admin`: leads table fetched from `GET /api/v1/leads` via TanStack Query, columns Customer Name, Masked Mobile, Net Weight, Selected Plan, Calculated Loan Value, with loading/empty/error states. `src/components/ui/table.tsx` (shadcn) added as the first table primitive. Mobile masking is already applied server-side, so the raw number is never present in the response the UI renders.
+- [GLA-27] `AI_LOG.md`'s required sections explicitly tagged as satisfying `GLA-30`, plus a `GLA-27` ticket-log entry; `README.md` gains a "Running the Full Stack Locally" section cross-referencing the sibling `gold-loan-portal-api` repo, and a "Development Process" section noting the Jira-driven Agile workflow (project key `GLA`).
+- [GLA-27] `src/components/AppHeader.tsx` — persistent site header (brand link to `/`, "View Leads" nav to `/admin`), rendered once in `App.tsx` above `Routes`. `src/components/ui/skeleton.tsx` (shadcn) added as the loading-state primitive.
+- [GLA-27] `StepProgress` component replaces the repeated "Step X of 3" text across the three lead-intake pages with a small visual progress bar plus label.
+- [GLA-27] Loading-state polish: `CalculatingIndicator` (spinner + "Calculating…") for the live loan calculation, `LoanSchemeCardSkeleton` for the plan-selection cards, `LeadsTableSkeleton` for the leads dashboard table — replacing plain "Loading…" text everywhere a query is in flight.
 
 ### Changed
 
 - [GLA-21] `customerGoldDetailsSchema`'s gross/net/purity fields extracted into a shared `goldWeightFields` object (mirroring the backend's `lead.schema.ts`) so the new `goldCalculatorSchema` can reuse them without drift; the gross/net/purity `FormField` markup itself extracted into `GoldWeightFields`, shared between `CustomerGoldDetailsForm` and the new loan calculator.
+- [GLA-27] Lead-intake and dashboard pages widened/made responsive: padding scales down on small screens (`px-4 py-10` → `sm:px-5 sm:py-16`), cards grow to `sm:max-w-lg`, the loan calculator's weight fields and plan cards lay out in two columns at `sm+`, and its Back/Continue buttons stack (`flex-col-reverse`) below `sm` instead of cramping side by side.
+- [GLA-27] Visiting `/admin` now resets the in-progress lead-intake state (`leadIntakeStore.reset()`, imported cross-feature into `leads-dashboard`), so returning to step 1 afterwards starts a fresh form instead of resuming stale values from an abandoned application.
 
 ### Fixed
 
 - [GLA-24] `LoanCalculatorPage`'s store-sync effect crashed with "Maximum update depth exceeded" — it depended on a `safeParse` result computed fresh (and non-memoized) on every render instead of on the stable `debouncedValues` it was derived from, so every render re-fired the effect and re-triggered a store update. Fixed by keying the effect off `debouncedValues` and re-parsing inside it.
+- [GLA-27] Step 1 (`CustomerGoldDetailsForm`) always rendered empty on mount, even when the user had already filled it in and only navigated forward and back within the flow (1 → 2 → 1) — it now prefills from `leadIntakeStore.customerDetails` when present.
 
 ### Removed

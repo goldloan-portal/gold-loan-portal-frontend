@@ -8,8 +8,11 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router';
+import { CalculatingIndicator } from '../components/CalculatingIndicator';
 import { GoldWeightFields } from '../components/GoldWeightFields';
 import { LoanSchemeCard } from '../components/LoanSchemeCard';
+import { LoanSchemeCardSkeleton } from '../components/LoanSchemeCardSkeleton';
+import { StepProgress } from '../components/StepProgress';
 import {
   goldCalculatorSchema,
   type GoldCalculatorFormInput,
@@ -78,29 +81,29 @@ export function LoanCalculatorPage() {
   const canContinue = Boolean(selectedPlanId) && Boolean(calculationQuery.data);
 
   return (
-    <main className="flex flex-1 flex-col items-center gap-8 px-5 py-16">
-      <div className="max-w-md text-center">
-        <p className="mb-2 text-sm font-medium tracking-wide text-primary uppercase">Step 2 of 3</p>
+    <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10 sm:px-5 sm:py-16">
+      <div className="max-w-md text-center sm:max-w-lg">
+        <StepProgress step={2} />
         <h1 className="font-heading text-3xl font-medium text-foreground">Loan Calculator</h1>
         <p className="mt-3 text-muted-foreground">
           Adjust the collateral details to see your live loan estimate, then choose a plan.
         </p>
       </div>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md sm:max-w-lg">
         <CardHeader>
           <CardTitle>{customerDetails.customerName}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-6">
           <Form {...form}>
-            <div className="grid gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <GoldWeightFields control={form.control} />
             </div>
           </Form>
 
           <div className="rounded-lg border border-border bg-muted/30 p-4">
             {calculationQuery.isFetching ? (
-              <p className="text-sm text-muted-foreground">Calculating&hellip;</p>
+              <CalculatingIndicator />
             ) : calculationQuery.isError ? (
               <p className="text-sm text-destructive">
                 Could not calculate your estimate. Try again.
@@ -125,16 +128,19 @@ export function LoanCalculatorPage() {
         </CardContent>
       </Card>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md sm:max-w-lg">
         <CardHeader>
           <CardTitle>Choose a Plan</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-3">
+        <CardContent className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {loanSchemesQuery.isPending && (
-            <p className="text-sm text-muted-foreground">Loading plans&hellip;</p>
+            <>
+              <LoanSchemeCardSkeleton />
+              <LoanSchemeCardSkeleton />
+            </>
           )}
           {loanSchemesQuery.isError && (
-            <p className="text-sm text-destructive">Could not load loan plans.</p>
+            <p className="col-span-full text-sm text-destructive">Could not load loan plans.</p>
           )}
           {loanSchemesQuery.data?.map((scheme) => (
             <LoanSchemeCard
@@ -147,7 +153,7 @@ export function LoanCalculatorPage() {
         </CardContent>
       </Card>
 
-      <div className="flex w-full max-w-md gap-3">
+      <div className="flex w-full max-w-md flex-col-reverse gap-3 sm:max-w-lg sm:flex-row">
         <Button variant="outline" className="flex-1" onClick={() => void navigate('/')}>
           Back
         </Button>

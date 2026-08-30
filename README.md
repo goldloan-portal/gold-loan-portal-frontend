@@ -27,6 +27,17 @@ The dev server starts on Vite's default port (`5173`).
 
 Keep `.env.example` in sync with every key `.env` defines — no real values in the example file.
 
+## Running the Full Stack Locally
+
+This app is the UI half of the Gold Loan Portal — it needs the sibling [`gold-loan-portal-api`](../gold-loan-portal-api) repo running alongside it for any screen that hits the network (all of them).
+
+1. Start the API first (see its own `README.md` → Setup) — it defaults to `http://localhost:4000`.
+2. Set `VITE_API_BASE_URL` in this repo's `.env` to that same URL (already the default in `.env.example`).
+3. Start this app: `pnpm dev` — defaults to `http://localhost:5173`.
+4. Open `http://localhost:5173` — step 1 (`/`) is the intake form, `/loan-calculator` and `/review` are steps 2–3, `/admin` is the leads dashboard.
+
+The API's CORS is currently unrestricted (see its `CLAUDE.md` → Known Issues), so no extra configuration is needed to call it from a different port.
+
 ## Scripts
 
 | Command                | What it does                                  |
@@ -40,6 +51,10 @@ Keep `.env.example` in sync with every key `.env` defines — no real values in 
 | `pnpm lint`            | ESLint, with `--fix`                          |
 | `pnpm prettier:check`  | Check formatting without writing              |
 | `pnpm prettier:format` | Write formatting fixes                        |
+
+## Development Process
+
+This project was built ticket-by-ticket in Jira (project key `GLA`), following a lightweight Agile workflow: each unit of work is a Jira story/task with its own acceptance criteria, implemented on its own `feature/GLA-<n>-*` branch, and shipped through a dedicated PR back into `dev` — commit messages and CHANGELOG entries are tagged with their ticket number (`[GLA-<n>]`) so any change can be traced back to the ticket that drove it.
 
 ## Documentation
 

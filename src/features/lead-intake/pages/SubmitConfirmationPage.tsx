@@ -1,9 +1,11 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Skeleton } from '@/components/ui/skeleton';
 import { type ApiError, isFieldErrorArray } from '@/lib/apiClient';
 import { formatCurrencyINR, maskMobileNumber } from '@/lib/format';
 import { useQuery } from '@tanstack/react-query';
 import { Navigate, useNavigate } from 'react-router';
+import { StepProgress } from '../components/StepProgress';
 import type { SubmitLeadPayload } from '../lead-intake.service';
 import { fetchLoanSchemes } from '../lead-intake.service';
 import { useLeadIntakeStore } from '../leadIntakeStore';
@@ -45,8 +47,8 @@ export function SubmitConfirmationPage() {
 
   if (applicationId) {
     return (
-      <main className="flex flex-1 flex-col items-center gap-8 px-5 py-16">
-        <div className="max-w-md text-center">
+      <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10 sm:px-5 sm:py-16">
+        <div className="max-w-md text-center sm:max-w-lg">
           <p className="mb-2 text-sm font-medium tracking-wide text-primary uppercase">
             Application Submitted
           </p>
@@ -55,7 +57,7 @@ export function SubmitConfirmationPage() {
           </h1>
         </div>
 
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-md sm:max-w-lg">
           <CardHeader>
             <CardTitle>Application ID</CardTitle>
           </CardHeader>
@@ -70,7 +72,11 @@ export function SubmitConfirmationPage() {
               </dd>
               <dt className="text-muted-foreground">Plan</dt>
               <dd className="text-right font-medium text-foreground">
-                {selectedPlan?.name ?? 'Selected plan'}
+                {loanSchemesQuery.isPending ? (
+                  <Skeleton className="ml-auto h-4 w-24" />
+                ) : (
+                  (selectedPlan?.name ?? 'Selected plan')
+                )}
               </dd>
               <dt className="text-muted-foreground">Loan amount</dt>
               <dd className="text-right font-medium text-foreground">
@@ -85,16 +91,16 @@ export function SubmitConfirmationPage() {
   }
 
   return (
-    <main className="flex flex-1 flex-col items-center gap-8 px-5 py-16">
-      <div className="max-w-md text-center">
-        <p className="mb-2 text-sm font-medium tracking-wide text-primary uppercase">Step 3 of 3</p>
+    <main className="flex flex-1 flex-col items-center gap-8 px-4 py-10 sm:px-5 sm:py-16">
+      <div className="max-w-md text-center sm:max-w-lg">
+        <StepProgress step={3} />
         <h1 className="font-heading text-3xl font-medium text-foreground">Review &amp; Submit</h1>
         <p className="mt-3 text-muted-foreground">
           Confirm your details before submitting your application.
         </p>
       </div>
 
-      <Card className="w-full max-w-md">
+      <Card className="w-full max-w-md sm:max-w-lg">
         <CardHeader>
           <CardTitle>{customerDetails.customerName}</CardTitle>
         </CardHeader>

@@ -19,19 +19,25 @@ import { GoldWeightFields } from './GoldWeightFields';
 
 interface CustomerGoldDetailsFormProps {
   onSubmit: (values: CustomerGoldDetailsFormValues) => void;
+  defaultValues?: CustomerGoldDetailsFormInput;
 }
 
-export function CustomerGoldDetailsForm({ onSubmit }: CustomerGoldDetailsFormProps) {
+const EMPTY_DEFAULT_VALUES: CustomerGoldDetailsFormInput = {
+  customerName: '',
+  mobileNumber: '',
+  grossWeightGrams: '',
+  netWeightGrams: '',
+  purityKarat: '',
+};
+
+export function CustomerGoldDetailsForm({
+  onSubmit,
+  defaultValues = EMPTY_DEFAULT_VALUES,
+}: CustomerGoldDetailsFormProps) {
   const form = useForm<CustomerGoldDetailsFormInput, unknown, CustomerGoldDetailsFormValues>({
     resolver: zodResolver(customerGoldDetailsSchema),
     mode: 'onBlur',
-    defaultValues: {
-      customerName: '',
-      mobileNumber: '',
-      grossWeightGrams: '',
-      netWeightGrams: '',
-      purityKarat: '',
-    },
+    defaultValues,
   });
 
   return (
