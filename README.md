@@ -13,10 +13,19 @@ Vite + React 19 + TypeScript frontend for the Gold Loan Portal. See [PRODUCT.md]
 
 ```bash
 pnpm install
+cp .env.example .env
 pnpm dev
 ```
 
 The dev server starts on Vite's default port (`5173`).
+
+## Environment Variables
+
+| Variable            | Purpose                                       |
+| ------------------- | --------------------------------------------- |
+| `VITE_API_BASE_URL` | Base URL of the `gold-loan-portal-api` server |
+
+Keep `.env.example` in sync with every key `.env` defines — no real values in the example file.
 
 ## Scripts
 

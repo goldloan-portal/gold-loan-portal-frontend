@@ -5,7 +5,7 @@ applyTo: 'src/features/**/*.ts, src/features/**/*.tsx'
 
 # State Management
 
-(Applies once TanStack Query and Zustand are installed — see the root `CLAUDE.md` → Coming soon. These are the rules to follow from that point on.)
+TanStack Query and Zustand are installed and wired up — see `CLAUDE.md` → Stack.
 
 ## Decision Checklist
 

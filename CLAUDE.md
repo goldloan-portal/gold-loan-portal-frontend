@@ -8,14 +8,15 @@ Vite + React 19 + TypeScript SPA for the Gold Loan Portal. This document is the 
 - Vitest (`jsdom` environment, `globals: true`) for tests — see `vite.config.ts`. Test files are colocated as `*.test.ts`/`*.test.tsx` next to the code they cover.
 - Package manager: **pnpm** (pinned via `packageManager` in `package.json`). Don't use `npm`/`yarn` in this repo.
 - Lint/format/hooks: ESLint (flat config, React hooks + refresh plugins), Prettier, Husky, lint-staged. See `.husky/*` and `CHANGELOG.md` for what's enforced.
+- **Server state: TanStack Query.** `QueryClientProvider` wraps the app in `main.tsx`, backed by the single `queryClient` instance in `src/lib/queryClient.ts`. Anything that comes from the API — loan records, customer lookups, gold rate data — is a query or mutation, never fetched in a `useEffect` and stored in local/component state. Query keys live in one `queryKeys.ts` per feature (once a feature exists). One mutations file per feature centralizes invalidations — a mutation that changes data must invalidate every query it affects.
+- **URL query-param state: nuqs.** `NuqsAdapter` wraps the app in `main.tsx`, inside the query client provider.
+- **Client state: Zustand.** Reserved for state that isn't server data and isn't local to one component — e.g. the active branch/session, a multi-step form's in-progress values. If it comes from the API, it's a query, not a store. If it's only used by one component and its children, it's `useState`, not a store. No store exists yet — add the first one in the ticket that actually needs global client state.
+- **Forms: React Hook Form + Zod**, via `@hookform/resolvers`. Schema colocated with the feature (`<feature>/<feature>.schema.ts`), shared with the corresponding API call's expected shape where the two overlap. Mapping form values to an API payload is a small function in the feature's own service/mapper file — not inline in the component or the submit handler. No form exists yet — add the first schema in the ticket that needs it.
 
 ### Coming soon (not installed yet)
 
 Committed choices, not yet wired up. Add each in the ticket that actually needs it rather than ahead of time, and follow the convention below from that point on.
 
-- **Server state: TanStack Query.** Anything that comes from the API — loan records, customer lookups, gold rate data — is a query or mutation, never fetched in a `useEffect` and stored in local/component state. Query keys live in one `queryKeys.ts` per feature. One mutations file per feature centralizes invalidations — a mutation that changes data must invalidate every query it affects.
-- **Client state: Zustand.** Reserved for state that isn't server data and isn't local to one component — e.g. the active branch/session, a multi-step form's in-progress values. If it comes from the API, it's a query, not a store. If it's only used by one component and its children, it's `useState`, not a store.
-- **Forms: React Hook Form + Zod**, via `@hookform/resolvers`. Schema colocated with the feature (`<feature>/<feature>.schema.ts`), shared with the corresponding API call's expected shape where the two overlap. Mapping form values to an API payload is a small function in the feature's own service/mapper file — not inline in the component or the submit handler.
 - **Testing Library** (`@testing-library/react`, `@testing-library/jest-dom`, `@testing-library/user-event`) — add these once there's an actual component worth testing beyond a sanity check; Vitest itself is already configured and ready.
 
 ## Folder Structure
@@ -91,6 +92,6 @@ Only log prompts that produced a change which actually merged. A ticket revisite
 ## Known Issues / Notes
 
 - No routing library yet — a single `App.tsx` with no navigation. Add one (e.g. React Router) when a second screen exists.
-- No API client/base URL setup yet.
+- No API client wired up yet — `VITE_API_BASE_URL` is defined in `.env.example` for when one lands.
 - No authentication yet.
 - No design system/shared UI primitives yet — `components/ui/` is a placeholder until the first one is needed.

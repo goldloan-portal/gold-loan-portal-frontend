@@ -5,7 +5,7 @@ applyTo: 'src/features/**/*.ts, src/features/**/*.tsx'
 
 # Forms
 
-(Applies once React Hook Form and Zod are installed — see the root `CLAUDE.md` → Coming soon. These are the rules to follow from that point on.)
+React Hook Form and Zod are installed — see `CLAUDE.md` → Stack.
 
 ## Schema Placement
 
