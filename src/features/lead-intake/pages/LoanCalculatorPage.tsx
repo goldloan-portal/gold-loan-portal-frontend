@@ -5,6 +5,7 @@ import { useDebouncedValue } from '@/hooks/useDebouncedValue';
 import { formatCurrencyINR } from '@/lib/format';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 import { Navigate, useNavigate } from 'react-router';
 import { GoldWeightFields } from '../components/GoldWeightFields';
@@ -24,7 +25,9 @@ export function LoanCalculatorPage() {
   const navigate = useNavigate();
   const customerDetails = useLeadIntakeStore((state) => state.customerDetails);
   const selectedPlanId = useLeadIntakeStore((state) => state.selectedPlanId);
+  const setCustomerDetails = useLeadIntakeStore((state) => state.setCustomerDetails);
   const setSelectedPlanId = useLeadIntakeStore((state) => state.setSelectedPlanId);
+  const setLastCalculation = useLeadIntakeStore((state) => state.setLastCalculation);
 
   const form = useForm<GoldCalculatorFormInput, unknown, GoldCalculatorFormValues>({
     resolver: zodResolver(goldCalculatorSchema),
@@ -53,9 +56,25 @@ export function LoanCalculatorPage() {
     queryFn: fetchLoanSchemes,
   });
 
+  useEffect(() => {
+    if (!parsedInput.success) return;
+    const currentDetails = useLeadIntakeStore.getState().customerDetails;
+    if (currentDetails) {
+      setCustomerDetails({ ...currentDetails, ...parsedInput.data });
+    }
+  }, [parsedInput.success, parsedInput.data, setCustomerDetails]);
+
+  useEffect(() => {
+    if (calculationQuery.data) {
+      setLastCalculation(calculationQuery.data);
+    }
+  }, [calculationQuery.data, setLastCalculation]);
+
   if (!customerDetails) {
     return <Navigate to="/" replace />;
   }
+
+  const canContinue = Boolean(selectedPlanId) && Boolean(calculationQuery.data);
 
   return (
     <main className="flex flex-1 flex-col items-center gap-8 px-5 py-16">
@@ -127,9 +146,14 @@ export function LoanCalculatorPage() {
         </CardContent>
       </Card>
 
-      <Button variant="outline" onClick={() => void navigate('/')}>
-        Back
-      </Button>
+      <div className="flex w-full max-w-md gap-3">
+        <Button variant="outline" className="flex-1" onClick={() => void navigate('/')}>
+          Back
+        </Button>
+        <Button className="flex-1" disabled={!canContinue} onClick={() => void navigate('/review')}>
+          Continue
+        </Button>
+      </div>
     </main>
   );
 }
