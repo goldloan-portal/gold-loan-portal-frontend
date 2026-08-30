@@ -28,6 +28,7 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-6] `README.md` env setup step and variable table.
 - [GLA-19] Step 1 — Customer & Gold Details form (covers GLA-20): customer name, mobile number, gross/net weight, and purity karat fields, validated with React Hook Form + Zod mirroring the backend's `createLeadSchema` rules (10-digit mobile format, net weight ≤ gross weight), blocking progression until every field is valid.
 - [GLA-19] Tailwind CSS v4 + shadcn/ui (`radix-nova` style) installed and wired up — `Button`, `Input`, `Label`, `Select`, `Card`, and `Form` primitives in `src/components/ui/`, `@/*` import alias, gold/amber brand accent in `src/index.css`.
+- [GLA-19] React Router (`react-router`) installed and wired up — `App.tsx` is now a `BrowserRouter`/`Routes` shell, `/` renders `features/lead-intake/pages/CustomerGoldDetailsPage.tsx`, establishing a `features/<feature>/pages/` convention for route-level screens.
 
 ### Changed
 

@@ -13,6 +13,7 @@ Vite + React 19 + TypeScript SPA for the Gold Loan Portal. This document is the 
 - **URL query-param state: nuqs.** `NuqsAdapter` wraps the app in `main.tsx`, inside the query client provider.
 - **Client state: Zustand.** Reserved for state that isn't server data and isn't local to one component — e.g. the active branch/session, a multi-step form's in-progress values. If it comes from the API, it's a query, not a store. If it's only used by one component and its children, it's `useState`, not a store. No store exists yet — add the first one in the ticket that actually needs global client state.
 - **Forms: React Hook Form + Zod**, via `@hookform/resolvers`, composed with shadcn's `Form`/`FormField`/`FormItem`/`FormControl`/`FormMessage` (`src/components/ui/form.tsx`). Schema colocated with the feature (`<feature>/<feature>.schema.ts`), shared with the corresponding API call's expected shape where the two overlap. A field validated with `z.coerce.number()` needs `useForm`'s separate input/output generics (`z.input<typeof schema>` for form state, `z.output<typeof schema>` for the submit handler) — RHF and the schema's post-coercion type otherwise conflict. Mapping form values to an API payload is a small function in the feature's own service/mapper file — not inline in the component or the submit handler. First real example: `src/features/lead-intake/` (GLA-19).
+- **Routing: React Router** (the unified `react-router` package, not the separate `react-router-dom`). `App.tsx` is just the `BrowserRouter`/`Routes` shell — no page content of its own. Each route's `element` is a page component under that feature's `pages/` folder (`features/<feature>/pages/<Feature>Page.tsx`), which owns that screen's layout and any state scoped to it; a feature's `components/` stay presentational pieces used by its page(s), not full screens.
 
 ### Coming soon (not installed yet)
 
@@ -30,6 +31,7 @@ src/
     ui/                        # shadcn/ui primitives (Button, Input, Select, Form, Card, ...) with no feature logic
   features/
     <feature>/
+      pages/                     # route-level screens for this feature, wired up in App.tsx
       components/               # components used only by this feature
       <feature>.schema.ts        # Zod schemas for this feature's forms/inputs
       <feature>.service.ts       # API calls + form-to-payload mapping for this feature
@@ -92,6 +94,5 @@ Only log prompts that produced a change which actually merged. A ticket revisite
 
 ## Known Issues / Notes
 
-- No routing library yet — a single `App.tsx` with no navigation. Add one (e.g. React Router) when a second screen exists.
 - No API client wired up yet — `VITE_API_BASE_URL` is defined in `.env.example` for when one lands.
 - No authentication yet.
