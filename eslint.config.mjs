@@ -30,4 +30,12 @@ export default tseslint.config(
       '@typescript-eslint/no-unused-vars': 'warn',
     },
   },
+  {
+    // shadcn/ui components co-locate variant/hook exports (e.g. buttonVariants,
+    // useFormField) alongside the component by convention — not a real HMR bug.
+    files: ['src/components/ui/**/*.tsx'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 );
