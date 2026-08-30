@@ -8,13 +8,6 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import {
@@ -22,16 +15,11 @@ import {
   type CustomerGoldDetailsFormInput,
   type CustomerGoldDetailsFormValues,
 } from '../lead-intake.schema';
+import { GoldWeightFields } from './GoldWeightFields';
 
 interface CustomerGoldDetailsFormProps {
   onSubmit: (values: CustomerGoldDetailsFormValues) => void;
 }
-
-const PURITY_OPTIONS = [
-  { value: '18', label: '18K' },
-  { value: '22', label: '22K' },
-  { value: '24', label: '24K' },
-];
 
 export function CustomerGoldDetailsForm({ onSubmit }: CustomerGoldDetailsFormProps) {
   const form = useForm<CustomerGoldDetailsFormInput, unknown, CustomerGoldDetailsFormValues>({
@@ -79,62 +67,7 @@ export function CustomerGoldDetailsForm({ onSubmit }: CustomerGoldDetailsFormPro
             </FormItem>
           )}
         />
-        <div className="grid grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="grossWeightGrams"
-            render={({ field: { value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Gross Weight (g)</FormLabel>
-                <FormControl>
-                  <Input type="number" step="0.01" min="0" value={value as string} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="netWeightGrams"
-            render={({ field: { value, ...field } }) => (
-              <FormItem>
-                <FormLabel>Net Weight (g)</FormLabel>
-                <FormControl>
-                  <Input type="number" step="0.01" min="0" value={value as string} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <FormField
-          control={form.control}
-          name="purityKarat"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Purity</FormLabel>
-              <Select
-                onValueChange={field.onChange}
-                value={field.value as string}
-                name={field.name}
-              >
-                <FormControl>
-                  <SelectTrigger className="w-full" onBlur={field.onBlur} ref={field.ref}>
-                    <SelectValue placeholder="Select purity" />
-                  </SelectTrigger>
-                </FormControl>
-                <SelectContent>
-                  {PURITY_OPTIONS.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <GoldWeightFields control={form.control} />
         <Button type="submit" size="lg" className="mt-2">
           Continue
         </Button>

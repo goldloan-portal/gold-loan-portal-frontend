@@ -29,8 +29,13 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-19] Step 1 — Customer & Gold Details form (covers GLA-20): customer name, mobile number, gross/net weight, and purity karat fields, validated with React Hook Form + Zod mirroring the backend's `createLeadSchema` rules (10-digit mobile format, net weight ≤ gross weight), blocking progression until every field is valid.
 - [GLA-19] Tailwind CSS v4 + shadcn/ui (`radix-nova` style) installed and wired up — `Button`, `Input`, `Label`, `Select`, `Card`, and `Form` primitives in `src/components/ui/`, `@/*` import alias, gold/amber brand accent in `src/index.css`.
 - [GLA-19] React Router (`react-router`) installed and wired up — `App.tsx` is now a `BrowserRouter`/`Routes` shell, `/` renders `features/lead-intake/pages/CustomerGoldDetailsPage.tsx`, establishing a `features/<feature>/pages/` convention for route-level screens.
+- [GLA-21] Step 2 — Loan Calculator & Scheme Selection (covers GLA-22 + GLA-23), routed at `/loan-calculator`: live pure-gold-weight/max-eligible-loan estimate from `POST /api/v1/leads/calculate` as gross/net/purity change (400ms debounced, backend is the single source of truth — nothing computed client-side), and selectable loan-plan cards fetched from `GET /api/v1/loan-schemes` via TanStack Query. Selection stored in a new `leadIntakeStore` (Zustand) alongside step 1's submitted details, shared across both pages for step 3. Redirects to `/` if step 2 is opened without step 1's data.
+- [GLA-21] `src/lib/apiClient.ts` — first API client, thin `fetch` wrapper matching the backend's `{ data }` / `{ error }` envelope, throwing a typed `ApiError`. `.env` created locally from `.env.example` (`VITE_API_BASE_URL`).
+- [GLA-21] `src/hooks/useDebouncedValue.ts` — generic debounce hook, first addition to `src/hooks/`.
 
 ### Changed
+
+- [GLA-21] `customerGoldDetailsSchema`'s gross/net/purity fields extracted into a shared `goldWeightFields` object (mirroring the backend's `lead.schema.ts`) so the new `goldCalculatorSchema` can reuse them without drift; the gross/net/purity `FormField` markup itself extracted into `GoldWeightFields`, shared between `CustomerGoldDetailsForm` and the new loan calculator.
 
 ### Fixed
 
