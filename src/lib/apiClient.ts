@@ -16,6 +16,21 @@ export class ApiError extends Error {
   }
 }
 
+export interface FieldError {
+  field: string;
+  message: string;
+}
+
+export function isFieldErrorArray(value: unknown): value is FieldError[] {
+  return (
+    Array.isArray(value) &&
+    value.every(
+      (item: unknown) =>
+        typeof item === 'object' && item !== null && 'field' in item && 'message' in item,
+    )
+  );
+}
+
 export function apiGet<T>(path: string): Promise<T> {
   return request<T>(path);
 }
