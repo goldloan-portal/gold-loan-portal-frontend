@@ -23,6 +23,9 @@ Each entry references the Jira ticket (`GLA-XXX`) that introduced the change.
 - [GLA-3] `docs/adr/` — Nygard-template ADR scaffolding (`README.md` index + `0000-template.md`).
 - [GLA-4] GitHub Actions CI (`.github/workflows/ci.yaml`): install, lint, prettier check, typecheck, test, build on every PR into `dev`/`main` and every push to `main`. `changelog-guard.yaml` reuses `scripts/check-changelog-section.sh` to gate PRs into `dev`.
 - [GLA-4] `README.md` replaced with real setup instructions, script table, and a CI status badge (was still the stock Vite template).
+- [GLA-6] TanStack Query, nuqs, Zustand, Zod, React Hook Form, and `@hookform/resolvers` installed and wired up — `QueryClientProvider`/`NuqsAdapter` in `main.tsx`, `queryClient` instance in `src/lib/queryClient.ts`.
+- [GLA-6] `.env.example` with `VITE_API_BASE_URL`; `.env` gitignored.
+- [GLA-6] `README.md` env setup step and variable table.
 
 ### Changed
 
